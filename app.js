@@ -22,8 +22,7 @@ const state = {
   }
 };
 
-// ── PICKER VALUES ──────────────────────────
-const picked = { h: 0, m: 0, s: 0 };
+// ── PICKER VALUES (Handled via inputs now) ──
 
 // ── DOM REFS ───────────────────────────────
 const screenPicker  = document.getElementById('screen-picker');
@@ -38,147 +37,17 @@ const settingsOverlay = document.getElementById('settings-overlay');
 const hamburgerBtn  = document.getElementById('hamburger-btn');
 
 // ══════════════════════════════════════════
-//  DRUM PICKER
+//  SIMPLE PICKER ACCESS
 // ══════════════════════════════════════════
-function buildDrumCols() {
-  [
-    { id: 'col-h', max: 23, key: 'h', def: 0 },
-    { id: 'col-m', max: 59, key: 'm', def: 5 },
-    { id: 'col-s', max: 59, key: 's', def: 0 }
-  ].forEach(({ id, max, key, def }) => {
-    const col = document.getElementById(id);
-    initDrum(col, max, key, def);
-  });
-}
-
-const ITEM_H    = 52;   // must match --picker-h in CSS
-const VIS_ITEMS = 5;
-const OFFSET    = 2;    // items above/below selection
-
-function initDrum(col, max, key, defVal) {
-  const inner = document.createElement('div');
-  inner.className = 'drum-col-inner';
-
-  // Pad top/bottom so selection aligns
-  const total = max + 1;
-  for (let i = 0; i < total; i++) {
-    const item = document.createElement('div');
-    item.className = 'drum-item';
-    item.textContent = String(i).padStart(2, '0');
-    inner.appendChild(item);
-  }
-  col.appendChild(inner);
-
-  // State
-  let currentY   = -defVal * ITEM_H;
-  let startY     = 0;
-  let lastY      = 0;
-  let velocity   = 0;
-  let rafId      = null;
-  let isDragging = false;
-  let lastTime   = 0;
-
-  picked[key] = defVal;
-  applyTranslate(inner, currentY);
-
-  function clamp(y) {
-    return Math.min(0, Math.max(-(max * ITEM_H), y));
-  }
-  function snap(y) {
-    return -Math.round(-y / ITEM_H) * ITEM_H;
-  }
-  function applyTranslate(el, y) {
-    el.style.transform = `translateY(${y + OFFSET * ITEM_H}px)`;
-    const idx = Math.round(-y / ITEM_H);
-    picked[key] = Math.min(max, Math.max(0, idx));
-    highlightItems(el, idx);
-  }
-  function highlightItems(el, active){
-    el.querySelectorAll('.drum-item').forEach((item, i) => {
-      const dist = Math.abs(i - active);
-      item.style.opacity = dist === 0 ? '1' : dist === 1 ? '0.45' : dist === 2 ? '0.2' : '0.07';
-      item.style.transform = dist === 0 ? 'scale(1)' : dist === 1 ? 'scale(0.88)' : 'scale(0.76)';
-    });
-  }
-
-  function startInertia(){
-    if (rafId) cancelAnimationFrame(rafId);
-    function step(){
-      velocity *= 0.92;
-      currentY = clamp(currentY + velocity);
-      applyTranslate(inner, currentY);
-      if (Math.abs(velocity) > 0.5) {
-        rafId = requestAnimationFrame(step);
-      } else {
-        const snapped = clamp(snap(currentY));
-        animateTo(snapped);
-      }
-    }
-    rafId = requestAnimationFrame(step);
-  }
-
-  function animateTo(target) {
-    if (rafId) cancelAnimationFrame(rafId);
-    function step(){
-      const diff = target - currentY;
-      if (Math.abs(diff) < 0.5) {
-        currentY = target; applyTranslate(inner, currentY); return;
-      }
-      currentY += diff * 0.25;
-      applyTranslate(inner, currentY);
-      rafId = requestAnimationFrame(step);
-    }
-    rafId = requestAnimationFrame(step);
-  }
-
-  // ── Touch ──
-  col.addEventListener('touchstart', e => {
-    isDragging = true; velocity = 0;
-    startY = lastY = e.touches[0].clientY;
-    lastTime = Date.now();
-    if (rafId) cancelAnimationFrame(rafId);
-  }, { passive: true });
-
-  col.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    const now = Date.now();
-    const dy  = e.touches[0].clientY - lastY;
-    velocity  = dy / Math.max(1, now - lastTime) * 16;
-    currentY  = clamp(currentY + dy);
-    applyTranslate(inner, currentY);
-    lastY = e.touches[0].clientY; lastTime = now;
-  }, { passive: true });
-
-  col.addEventListener('touchend', () => { isDragging = false; startInertia(); });
-
-  // ── Mouse ──
-  col.addEventListener('mousedown', e => {
-    isDragging = true; velocity = 0;
-    startY = lastY = e.clientY; lastTime = Date.now();
-    if (rafId) cancelAnimationFrame(rafId);
-  });
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const now = Date.now();
-    const dy  = e.clientY - lastY;
-    velocity  = dy / Math.max(1, now - lastTime) * 16;
-    currentY  = clamp(currentY + dy);
-    applyTranslate(inner, currentY);
-    lastY = e.clientY; lastTime = now;
-  });
-  window.addEventListener('mouseup', () => { if (isDragging){ isDragging = false; startInertia(); } });
-
-  // ── Wheel ──
-  col.addEventListener('wheel', e => {
-    e.preventDefault();
-    currentY = clamp(currentY - e.deltaY * 0.6);
-    applyTranslate(inner, currentY);
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = setTimeout(() => animateTo(clamp(snap(currentY))), 80);
-  }, { passive: false });
-
-  // Initial highlight
-  highlightItems(inner, defVal);
+function getPickedTime() {
+  const hInput = document.getElementById('input-h');
+  const mInput = document.getElementById('input-m');
+  const sInput = document.getElementById('input-s');
+  return {
+    h: parseInt(hInput.value, 10) || 0,
+    m: parseInt(mInput.value, 10) || 0,
+    s: parseInt(sInput.value, 10) || 0
+  };
 }
 
 // ══════════════════════════════════════════
@@ -314,10 +183,11 @@ function exitBurstState() {
 //  SESSION START / STOP
 // ══════════════════════════════════════════
 function startSession() {
+  const picked = getPickedTime();
   const total = picked.h * 3600 + picked.m * 60 + picked.s;
   if (total === 0) {
     // Default to 5 minutes if nothing set
-    picked.m = 5;
+    document.getElementById('input-m').value = 5;
     state.totalSeconds = 300;
   } else {
     state.totalSeconds = total;
@@ -433,4 +303,4 @@ if ('serviceWorker' in navigator) {
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
-buildDrumCols();
+// (No drum cols to build anymore)

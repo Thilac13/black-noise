@@ -47,29 +47,20 @@
 
     <div class="picker-label">Set Session Duration</div>
 
-    <div class="drum-picker-wrap">
-      <div class="drum-fade-top"></div>
-      <div class="drum-fade-bottom"></div>
-      <div class="drum-selector-bar"></div>
-
-      <div class="drum-cols">
-        <!-- HOURS -->
-        <div class="drum-col-wrap">
-          <div class="drum-col" id="col-h" data-unit="h" data-max="23"></div>
-          <div class="drum-unit">H</div>
-        </div>
-        <div class="drum-sep">:</div>
-        <!-- MINUTES -->
-        <div class="drum-col-wrap">
-          <div class="drum-col" id="col-m" data-unit="m" data-max="59"></div>
-          <div class="drum-unit">M</div>
-        </div>
-        <div class="drum-sep">:</div>
-        <!-- SECONDS -->
-        <div class="drum-col-wrap">
-          <div class="drum-col" id="col-s" data-unit="s" data-max="59"></div>
-          <div class="drum-unit">S</div>
-        </div>
+    <div class="simple-picker-wrap">
+      <div class="picker-group">
+        <input type="number" id="input-h" min="0" max="23" value="0" />
+        <div class="picker-lbl">H</div>
+      </div>
+      <div class="picker-sep">:</div>
+      <div class="picker-group">
+        <input type="number" id="input-m" min="0" max="59" value="5" />
+        <div class="picker-lbl">M</div>
+      </div>
+      <div class="picker-sep">:</div>
+      <div class="picker-group">
+        <input type="number" id="input-s" min="0" max="59" value="0" />
+        <div class="picker-lbl">S</div>
       </div>
     </div>
 
@@ -82,7 +73,7 @@
       </span>
     </button>
 
-    <p class="hint-text">Scroll wheels to set duration</p>
+    <p class="hint-text">Enter duration in hours, minutes, and seconds</p>
   </div>
 
   <!-- ══════════════ SCREEN 2: ACTIVE SESSION ══════════════ -->
