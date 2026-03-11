@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BlackNoise" />
+  <meta name="description" content="Randomised black noise burst generator – set a timer and endure the unpredictable." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Black Noise</title>
+</head>
+<body>
+
+  <!-- ══════════════ SCREEN 1: TIMER PICKER ══════════════ -->
+  <div id="screen-picker" class="screen active">
+    <div class="picker-bg">
+      <div class="noise-overlay"></div>
+    </div>
+
+    <header class="picker-header">
+      <div class="app-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" stroke="url(#grd)" stroke-width="2"/>
+            <rect x="8" y="19" width="4" height="4" rx="1" fill="white" opacity="0.3"/>
+            <rect x="14" y="14" width="4" height="9" rx="1" fill="white" opacity="0.6"/>
+            <rect x="20" y="16" width="4" height="12" rx="1" fill="white" opacity="0.9"/>
+            <rect x="26" y="10" width="4" height="18" rx="1" fill="white"/>
+            <defs>
+              <linearGradient id="grd" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#ff4444"/>
+                <stop offset="1" stop-color="#880000"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="app-name">BLACK NOISE</span>
+      </div>
+      <p class="app-tagline">Endure the unpredictable</p>
+    </header>
+
+    <div class="picker-label">Set Session Duration</div>
+
+    <div class="drum-picker-wrap">
+      <div class="drum-fade-top"></div>
+      <div class="drum-fade-bottom"></div>
+      <div class="drum-selector-bar"></div>
+
+      <div class="drum-cols">
+        <!-- HOURS -->
+        <div class="drum-col-wrap">
+          <div class="drum-col" id="col-h" data-unit="h" data-max="23"></div>
+          <div class="drum-unit">H</div>
+        </div>
+        <div class="drum-sep">:</div>
+        <!-- MINUTES -->
+        <div class="drum-col-wrap">
+          <div class="drum-col" id="col-m" data-unit="m" data-max="59"></div>
+          <div class="drum-unit">M</div>
+        </div>
+        <div class="drum-sep">:</div>
+        <!-- SECONDS -->
+        <div class="drum-col-wrap">
+          <div class="drum-col" id="col-s" data-unit="s" data-max="59"></div>
+          <div class="drum-unit">S</div>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-start" class="btn-start" onclick="startSession()">
+      <span class="btn-start-inner">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M6 4l12 6-12 6V4z"/>
+        </svg>
+        BEGIN SESSION
+      </span>
+    </button>
+
+    <p class="hint-text">Scroll wheels to set duration</p>
+  </div>
+
+  <!-- ══════════════ SCREEN 2: ACTIVE SESSION ══════════════ -->
+  <div id="screen-session" class="screen">
+
+    <!-- Hamburger -->
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()" aria-label="Settings">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Countdown display -->
+    <div class="session-content">
+      <div class="session-label">SESSION ACTIVE</div>
+      <div id="countdown" class="countdown">00:00:00</div>
+      <div class="session-sublabel" id="session-sublabel">Listening for bursts…</div>
+
+      <!-- Burst visual ring -->
+      <div class="burst-ring-wrap">
+        <div class="burst-ring" id="burst-ring"></div>
+        <div class="burst-ring burst-ring-2" id="burst-ring-2"></div>
+        <div class="burst-core" id="burst-core">
+          <svg viewBox="0 0 60 60" fill="none">
+            <circle cx="30" cy="30" r="28" stroke="rgba(255,50,50,0.4)" stroke-width="1.5"/>
+            <path d="M14 30 Q18 20 22 30 Q26 40 30 30 Q34 20 38 30 Q42 40 46 30" stroke="white" stroke-width="1.5" fill="none" class="wave-path" id="wave-path"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="burst-status" id="burst-status">STANDBY</div>
+    </div>
+
+    <!-- Stop button -->
+    <button class="btn-stop" onclick="stopSession()">■ STOP</button>
+
+    <!-- Waveform bars (decorative, animated during burst) -->
+    <div class="waveform-bars" id="waveform-bars">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SETTINGS DRAWER ══════════════ -->
+  <div class="settings-overlay" id="settings-overlay" onclick="toggleMenu()"></div>
+  <aside class="settings-drawer" id="settings-drawer">
+    <div class="settings-header">
+      <span class="settings-title">Settings</span>
+      <button class="settings-close" onclick="toggleMenu()">✕</button>
+    </div>
+
+    <div class="settings-body">
+
+      <div class="setting-group">
+        <label class="setting-label">
+          Volume
+          <span class="setting-value" id="val-volume">70%</span>
+        </label>
+        <input type="range" class="slider" id="sl-volume" min="0" max="100" value="70" oninput="updateSetting('volume', this.value)"/>
+        <div class="slider-track-labels"><span>Silent</span><span>Loud</span></div>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          Burst Interval Randomness
+          <span class="setting-value" id="val-interval">50%</span>
+        </label>
+        <input type="range" class="slider" id="sl-interval" min="0" max="100" value="50" oninput="updateSetting('interval', this.value)"/>
+        <div class="slider-track-labels"><span>Frequent</span><span>Rare</span></div>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          Burst Duration Randomness
+          <span class="setting-value" id="val-duration">50%</span>
+        </label>
+        <input type="range" class="slider" id="sl-duration" min="0" max="100" value="50" oninput="updateSetting('duration', this.value)"/>
+        <div class="slider-track-labels"><span>Quick Sting</span><span>Long Haul</span></div>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          Frequency Character
+          <span class="setting-value" id="val-freq">Mid</span>
+        </label>
+        <input type="range" class="slider" id="sl-freq" min="0" max="100" value="50" oninput="updateSetting('freq', this.value)"/>
+        <div class="slider-track-labels"><span>Deep Rumble</span><span>Harsh Scream</span></div>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">
+          Test Burst
+        </label>
+        <button class="btn-test" onclick="testBurst()">▶ Fire Test Burst</button>
+      </div>
+
+    </div>
+
+    <div class="settings-footer">
+      <div class="settings-footer-brand">BLACK NOISE</div>
+      <div class="settings-footer-sub">Unpredictable. Unavoidable.</div>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
