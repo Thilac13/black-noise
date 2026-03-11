@@ -5,9 +5,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --red:        #ff2222;
-  --red-dim:    #880000;
-  --red-glow:   rgba(255,34,34,0.35);
+  --accent:     #ffffff;
+  --accent-dim: #999999;
+  --accent-glow:rgba(255,255,255,0.25);
   --bg:         #080808;
   --bg2:        #101010;
   --bg3:        #181818;
@@ -53,7 +53,7 @@ html, body {
 .picker-bg {
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(120,0,0,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%),
     var(--bg);
   z-index: 0;
 }
@@ -79,7 +79,7 @@ html, body {
 .app-name {
   font-size: 22px; font-weight: 700;
   letter-spacing: 4px;
-  background: linear-gradient(135deg, #fff 0%, #ff4444 100%);
+  background: linear-gradient(135deg, #fff 0%, #aaaaaa 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -117,9 +117,9 @@ html, body {
   top: calc(var(--picker-h) * 2);
   left: 8%; right: 8%;
   height: var(--picker-h);
-  border-top: 1px solid rgba(255,34,34,0.5);
-  border-bottom: 1px solid rgba(255,34,34,0.5);
-  background: rgba(255,34,34,0.05);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.02);
   border-radius: 4px;
   pointer-events: none;
 }
@@ -133,7 +133,7 @@ html, body {
   flex: 1;
 }
 .drum-unit {
-  font-size: 10px; letter-spacing: 2px; color: var(--red);
+  font-size: 10px; letter-spacing: 2px; color: var(--accent);
   font-weight: 600; margin-top: 4px;
   position: absolute;
   bottom: -22px;
@@ -168,18 +168,18 @@ html, body {
 /* ── BUTTONS ─────────────────────────────── */
 .btn-start {
   position: relative; z-index: 1;
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-dim) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
   border: none; border-radius: 50px;
   width: 100%; max-width: 280px;
   padding: 0; cursor: pointer;
-  box-shadow: 0 0 30px var(--red-glow), 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px var(--accent-glow), 0 4px 20px rgba(0,0,0,0.5);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.btn-start:active { transform: scale(0.97); box-shadow: 0 0 10px var(--red-glow); }
+.btn-start:active { transform: scale(0.97); box-shadow: 0 0 10px var(--accent-glow); }
 .btn-start-inner {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 18px 32px;
-  font-size: 13px; font-weight: 700; letter-spacing: 3px; color: #fff;
+  font-size: 13px; font-weight: 700; letter-spacing: 3px; color: #000;
 }
 
 .hint-text {
@@ -224,16 +224,16 @@ html, body {
 }
 .burst-ring {
   position: absolute; inset: 0; border-radius: 50%;
-  border: 1.5px solid rgba(255,34,34,0.2);
+  border: 1.5px solid rgba(255,255,255,0.1);
   transition: border-color 0.2s;
 }
 .burst-ring-2 {
   inset: 16px;
-  border-color: rgba(255,34,34,0.1);
+  border-color: rgba(255,255,255,0.05);
 }
 .burst-core {
   width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(255,34,34,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.2s;
@@ -242,11 +242,11 @@ html, body {
 .wave-path { transition: stroke 0.2s; }
 
 /* Bursting state */
-.bursting .burst-ring  { border-color: rgba(255,34,34,0.7); animation: ring-pulse 0.4s ease-out infinite alternate; }
-.bursting .burst-ring-2 { border-color: rgba(255,80,80,0.4); animation: ring-pulse 0.4s 0.2s ease-out infinite alternate; }
-.bursting .burst-core  { background: radial-gradient(circle, rgba(255,34,34,0.3) 0%, transparent 70%); }
-.bursting .wave-path   { stroke: var(--red); }
-.bursting .countdown   { -webkit-text-fill-color: rgba(255,80,80,0.9); }
+.bursting .burst-ring  { border-color: rgba(255,255,255,0.5); animation: ring-pulse 0.4s ease-out infinite alternate; }
+.bursting .burst-ring-2 { border-color: rgba(255,255,255,0.25); animation: ring-pulse 0.4s 0.2s ease-out infinite alternate; }
+.bursting .burst-core  { background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); }
+.bursting .wave-path   { stroke: var(--accent); }
+.bursting .countdown   { -webkit-text-fill-color: rgba(255,255,255,0.9); }
 
 @keyframes ring-pulse {
   from { transform: scale(1);    opacity: 0.6; }
@@ -258,7 +258,7 @@ html, body {
   color: var(--txt-mute);
   transition: color 0.2s;
 }
-.bursting .burst-status { color: var(--red); }
+.bursting .burst-status { color: var(--accent); }
 
 /* ── WAVEFORM BARS ───────────────────────── */
 .waveform-bars {
@@ -274,7 +274,7 @@ html, body {
 
 .bar {
   flex: 1; max-width: 16px;
-  background: linear-gradient(180deg, var(--red) 0%, var(--red-dim) 100%);
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dim) 100%);
   border-radius: 3px 3px 0 0;
   height: 4px;
   transform-origin: bottom;
@@ -379,7 +379,7 @@ html, body {
   font-size: 13px; font-weight: 500; color: var(--txt);
 }
 .setting-value {
-  font-size: 12px; color: var(--red); font-weight: 600; letter-spacing: 0.5px;
+  font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 0.5px;
 }
 
 /* ── SLIDER ──────────────────────────────── */
@@ -393,15 +393,15 @@ html, body {
   -webkit-appearance: none; appearance: none;
   width: 22px; height: 22px; border-radius: 50%;
   background: white;
-  box-shadow: 0 0 10px rgba(255,34,34,0.5), 0 2px 8px rgba(0,0,0,0.4);
-  border: 2px solid var(--red);
+  box-shadow: 0 0 10px rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.4);
+  border: 2px solid var(--accent);
   transition: transform 0.15s;
 }
 .slider::-webkit-slider-thumb:active { transform: scale(1.2); }
 .slider::-moz-range-thumb {
   width: 22px; height: 22px; border-radius: 50%;
-  background: white; border: 2px solid var(--red);
-  box-shadow: 0 0 10px rgba(255,34,34,0.5);
+  background: white; border: 2px solid var(--accent);
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
   cursor: pointer;
 }
 .slider-track-labels {
@@ -411,15 +411,15 @@ html, body {
 
 /* ── TEST BURST BUTTON ───────────────────── */
 .btn-test {
-  background: rgba(255,34,34,0.1);
-  border: 1px solid rgba(255,34,34,0.3);
-  border-radius: 10px; color: var(--red);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px; color: var(--accent);
   font-family: var(--font); font-size: 12px; font-weight: 600; letter-spacing: 1px;
   padding: 14px 20px; cursor: pointer;
   transition: background 0.2s;
   width: 100%;
 }
-.btn-test:hover { background: rgba(255,34,34,0.2); }
+.btn-test:hover { background: rgba(255,255,255,0.1); }
 
 .settings-footer {
   padding: 20px 24px max(20px, env(safe-area-inset-bottom, 20px));
@@ -438,7 +438,7 @@ html, body {
 /* ── SCREEN FLASH during burst ───────────── */
 @keyframes screen-flash {
   0%, 100% { background: var(--bg); }
-  10%     { background: #1a0000; }
+  10%     { background: #1a1a1a; }
 }
 .flash-anim { animation: screen-flash 0.3s ease-out; }
 
