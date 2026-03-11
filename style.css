@@ -16,8 +16,6 @@
   --txt:        #f0f0f0;
   --txt-dim:    rgba(240,240,240,0.45);
   --txt-mute:   rgba(240,240,240,0.2);
-  --picker-h:   52px;   /* height of one drum item */
-  --picker-vis: 5;      /* number of visible rows */
   --font: 'Inter', system-ui, sans-serif;
 }
 
@@ -96,73 +94,50 @@ html, body {
   margin-bottom: 20px;
 }
 
-/* ── DRUM PICKER ─────────────────────────── */
-.drum-picker-wrap {
+/* ── SIMPLE NATIVE PICKER ────────────────── */
+.simple-picker-wrap {
   position: relative; z-index: 1;
-  width: 100%; max-width: 320px;
-  height: calc(var(--picker-h) * var(--picker-vis));
-  display: flex; flex-direction: column;
-  margin-bottom: 40px;
-}
-.drum-fade-top, .drum-fade-bottom {
-  position: absolute; left: 0; right: 0;
-  height: calc(var(--picker-h) * 2);
-  pointer-events: none; z-index: 3;
-}
-.drum-fade-top    { top: 0;    background: linear-gradient(var(--bg), transparent); }
-.drum-fade-bottom { bottom: 0; background: linear-gradient(transparent, var(--bg)); }
-
-.drum-selector-bar {
-  position: absolute; z-index: 2;
-  top: calc(var(--picker-h) * 2);
-  left: 8%; right: 8%;
-  height: var(--picker-h);
-  border-top: 1px solid rgba(255,255,255,0.15);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.02);
-  border-radius: 4px;
-  pointer-events: none;
-}
-
-.drum-cols {
   display: flex; align-items: center; justify-content: center;
-  gap: 0; height: 100%;
+  gap: 16px; margin-bottom: 40px;
 }
-.drum-col-wrap {
+.picker-group {
   display: flex; flex-direction: column; align-items: center;
-  flex: 1;
+  position: relative;
 }
-.drum-unit {
-  font-size: 10px; letter-spacing: 2px; color: var(--accent);
-  font-weight: 600; margin-top: 4px;
-  position: absolute;
-  bottom: -22px;
-}
-.drum-col-wrap { position: relative; }
-
-.drum-sep {
-  font-size: 28px; font-weight: 300; color: var(--txt-dim);
-  padding-bottom: 10px; flex-shrink: 0;
-  /* align with selector bar */
-  margin-top: 0;
-}
-
-.drum-col {
-  flex: 1; width: 100%;
-  overflow: hidden; position: relative;
-  height: calc(var(--picker-h) * var(--picker-vis));
-  cursor: ns-resize;
-}
-.drum-col-inner {
-  will-change: transform;
-  transition: transform 0.1s;
-}
-.drum-item {
-  height: var(--picker-h);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 34px; font-weight: 300;
+.picker-group input[type="number"] {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border);
   color: var(--txt);
-  transition: opacity 0.15s, transform 0.15s;
+  font-family: var(--font);
+  font-size: 36px;
+  font-weight: 300;
+  width: 64px;
+  text-align: center;
+  outline: none;
+  padding: 8px 0;
+  transition: border-color 0.2s;
+}
+.picker-group input[type="number"]:focus {
+  border-bottom-color: var(--accent);
+}
+/* Hide spin buttons for cleaner look, but they appear on hover/focus implicitly if we wanted to, or we can force them to show but styled cleanly. Let's just use defaults for now, or hide them for true minimalism: */
+.picker-group input[type="number"]::-webkit-inner-spin-button,
+.picker-group input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.picker-group input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.picker-lbl {
+  font-size: 10px; letter-spacing: 2px; color: var(--accent);
+  font-weight: 600; margin-top: 12px;
+}
+
+.picker-sep {
+  font-size: 32px; font-weight: 300; color: var(--txt-dim);
+  padding-bottom: 20px;
 }
 
 /* ── BUTTONS ─────────────────────────────── */
